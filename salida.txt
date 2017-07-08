@@ -1,0 +1,12 @@
+programa 
+int ID = ID ; 
+int ID ; 
+ID = + ; 
+imprimir ID ; 
+terminar 
+programa 
+int ID = ID ; 
+int ID ; 
+ID = + ; 
+imprimir ID ; 
+terminar 
