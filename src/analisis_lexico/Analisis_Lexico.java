@@ -42,11 +42,11 @@ public class Analisis_Lexico
         tabla_delimitador = new ArrayList<>(100);
         for (int i = 0; i < 100; i++)
         {
-            tabla_palabraDef.add(i,new ArrayList<>());
-            tabla_id.add(i,new ArrayList<>());
-            tabla_operadoresArit.add(i,new ArrayList<>());
-            tabla_operadoresLog.add(i,new ArrayList<>());
-            tabla_delimitador.add(i,new ArrayList<>());
+            tabla_palabraDef.add(i,new ArrayList<String>());
+            tabla_id.add(i,new ArrayList<String>());
+            tabla_operadoresArit.add(i,new ArrayList<String>());
+            tabla_operadoresLog.add(i,new ArrayList<String>());
+            tabla_delimitador.add(i,new ArrayList<String>());
         }
        
         //datos definidos
