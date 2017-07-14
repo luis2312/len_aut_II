@@ -18,6 +18,7 @@ import static analisis_lexico.Analisis_Lexico.esNumero;
 import static analisis_lexico.Analisis_Lexico.funcion_hash;
 import static analisis_lexico.Analisis_Lexico.indexar;
 import static analisis_lexico.tokens.obtener_tokens;
+import analisis_sintactico.tabla_sintactica;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -197,6 +198,7 @@ static DefaultTableModel modelo;
         btnAbrirArchivo = new javax.swing.JButton();
         btnGuardarArchivo = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
         jScrollPane5 = new javax.swing.JScrollPane();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
@@ -337,6 +339,17 @@ static DefaultTableModel modelo;
             }
         });
         jToolBar1.add(jButton2);
+
+        jButton3.setText("jButton3");
+        jButton3.setFocusable(false);
+        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton3);
 
         jCodigoSintactica.setEditable(false);
         jScrollPane6.setViewportView(jCodigoSintactica);
@@ -613,6 +626,10 @@ static DefaultTableModel modelo;
         
     }//GEN-LAST:event_btnAbrirArchivoActionPerformed
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        tabla_sintactica.cargar_tabla();
+    }//GEN-LAST:event_jButton3ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -658,6 +675,7 @@ static DefaultTableModel modelo;
     private javax.swing.JButton btnGuardarArchivo;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JEditorPane jCodigoSintactica;
     private javax.swing.JEditorPane jErrores;
     private javax.swing.JLabel jLabel1;
