@@ -15,6 +15,7 @@ public class Analisis_Lexico
     static ArrayList <ArrayList<String>> tabla_operadoresLog;
     static ArrayList <ArrayList<String>> tabla_id;
     static ArrayList <ArrayList<String>> tabla_delimitador;
+    static ArrayList <ArrayList<String>> tabla_operadoresBoo;
     public static ArrayList <String> pseudo_codigo=new ArrayList<>();
     static int count_pal_re=0, count_id=0, count_oper_arit=0, count_oper_log=0;
     //identificadores, numeros, strings
@@ -40,6 +41,7 @@ public class Analisis_Lexico
         tabla_operadoresArit = new ArrayList<>(100);
         tabla_operadoresLog = new ArrayList<>(100);
         tabla_delimitador = new ArrayList<>(100);
+        tabla_operadoresBoo = new ArrayList<>(100);
         for (int i = 0; i < 100; i++)
         {
             tabla_palabraDef.add(i,new ArrayList<String>());
@@ -47,6 +49,7 @@ public class Analisis_Lexico
             tabla_operadoresArit.add(i,new ArrayList<String>());
             tabla_operadoresLog.add(i,new ArrayList<String>());
             tabla_delimitador.add(i,new ArrayList<String>());
+            tabla_operadoresBoo.add(i,new ArrayList<String>());
         }
        
         //datos definidos
@@ -54,21 +57,11 @@ public class Analisis_Lexico
         //Palabras reservadas
         obtenIndex("inicio", 1);
         obtenIndex("fin", 1);
-        obtenIndex("lista_sentencia", 1);
-        obtenIndex("sentencia", 1);
-        obtenIndex("expresion", 1);
         obtenIndex("while", 1);
         obtenIndex("if_else", 1);
-        obtenIndex("switch_case", 1);
         obtenIndex("if", 1);
-        obtenIndex("for", 1);
-        obtenIndex("lista_case", 1);
         obtenIndex("case", 1);
         obtenIndex("default", 1);
-        obtenIndex("condicion", 1);
-        obtenIndex("condicion_logica", 1);
-        obtenIndex("condicion_and", 1);
-        obtenIndex("condicion_or", 1);
         obtenIndex("identificador", 1);
         obtenIndex("constante", 1);
         obtenIndex("int", 1);
@@ -97,7 +90,7 @@ public class Analisis_Lexico
         obtenIndex("!=", 3);
         
         //Delimitadores
-        obtenIndex("#", 5);
+        //obtenIndex("#", 5);
         obtenIndex(";", 5);
         obtenIndex(";\r", 5); 
         obtenIndex("{", 5);
@@ -105,6 +98,10 @@ public class Analisis_Lexico
         obtenIndex(")", 5);
         obtenIndex(",", 5);
         obtenIndex("(", 5);
+        
+        //Operadores Booleanos
+        obtenIndex("||", 6);
+        obtenIndex("&&", 6);
         
     }
     
@@ -154,6 +151,8 @@ public class Analisis_Lexico
             tabla_id.get(pos).add(cadena);
         else if(id==5)
             tabla_delimitador.get(pos).add(cadena);
+        else if(id==6)
+            tabla_operadoresBoo.get(pos).add(cadena);
     }
     
     //FUNCION HASH
@@ -209,7 +208,17 @@ public class Analisis_Lexico
                                 System.out.println(""+palabras.get(i)+" es una palabra reservada");
                                 count_pal_re++;
                                 aux="Pal_Reservada"+count_pal_re;
-                                pseudo_codigo.add(aux);
+                                if (palabras.get(i).matches("int")||palabras.get(i).matches("float")||palabras.get(i).matches("double")
+                                   ||palabras.get(i).matches("String")||palabras.get(i).matches("byte")||palabras.get(i).matches("boolean")
+                                   ||palabras.get(i).matches("char")) 
+                                {
+                                    pseudo_codigo.add("TIPO");
+                                }
+                                else
+                                {
+                                    pseudo_codigo.add(palabras.get(i));
+                                }
+                                //pseudo_codigo.add(aux);
                                 reservadas(palabras.get(i));
                                 bandera=true;
                             }
@@ -224,7 +233,14 @@ public class Analisis_Lexico
                                 System.out.println(""+palabras.get(i)+" es un operador aritmetico");
                                 //count_oper_arit++;
                                 //aux="Ope_arit"+count_oper_arit;
-                                pseudo_codigo.add(palabras.get(i));
+                                if (palabras.get(i).matches("="))
+                                {
+                                    pseudo_codigo.add("=");
+                                }
+                                else
+                                {
+                                    pseudo_codigo.add("OPERADOR_ARITMETICO");
+                                }
                                 Interfaz.operadoresA(palabras.get(i));
                                 bandera=true;
                             }
@@ -239,8 +255,21 @@ public class Analisis_Lexico
                                 System.out.println(""+palabras.get(i)+" es un operador logico");
                                 //count_oper_log++;
                                 //aux="Ope_log"+count_oper_log;
-                                pseudo_codigo.add(palabras.get(i));
+                                pseudo_codigo.add("OPERADOR_LOGICO");
                                 Interfaz.operadoresL(palabras.get(i));
+                                bandera=true;
+                            }
+                        }
+                    }
+                    if (!tabla_operadoresBoo.get(pos).isEmpty()) //si no esta vacia puede ser un operador logico
+                    {                
+                        for(int j = 0; j < tabla_operadoresBoo.get(pos).size(); j++) 
+                        {
+                            if (tabla_operadoresBoo.get(pos).get(j).equals(palabras.get(i)))
+                            {
+                                System.out.println(""+palabras.get(i)+" es un operador booleano");
+                                pseudo_codigo.add("OPERADOR_BOOLEANO");
+                                //Interfaz.operadoresL(palabras.get(i));// falta agregarlo a la interfaz
                                 bandera=true;
                             }
                         }
@@ -251,8 +280,8 @@ public class Analisis_Lexico
                         {
                             if (tabla_delimitador.get(pos).get(j).equals(palabras.get(i)))
                             {
+                                pseudo_codigo.add(palabras.get(i));
                                 System.out.println(""+palabras.get(i)+" es delimitador");
-                                pseudo_codigo.add("Delimitador");
                                 Interfaz.delimitadores(palabras.get(i));
                                 bandera=true;
                             }
@@ -511,7 +540,7 @@ public class Analisis_Lexico
                     else if ("'".equals(aux) && lexema.length() == i+1) 
                     {
                         resultado="Es una cadena de texto";
-                        pseudo_codigo.add("Cadena");
+                        pseudo_codigo.add("Constante");
                         System.out.println(""+lexema+" "+resultado);
                         estado="q3";
                         bandera=true;
@@ -526,7 +555,7 @@ public class Analisis_Lexico
                     else if (" '".equals(aux) && lexema.length() == i+1) 
                     {
                         resultado="Es una cadena de texto";
-                        pseudo_codigo.add("Cadena");
+                        pseudo_codigo.add("Constante");
                         System.out.println(""+lexema+" "+resultado);
                         estado="q3";
                         bandera=true;
@@ -584,7 +613,7 @@ public class Analisis_Lexico
                     else if ("|".equals(aux)  && lexema.length() == i+1) 
                     {
                         resultado="Es un comentario";
-                        pseudo_codigo.add("Comentario");
+                        //pseudo_codigo.add("Comentario");//no se agrega al pseudocodigo
                         System.out.println(""+lexema+" "+resultado);
                         estado="q3";
                         bandera=true;
@@ -599,7 +628,7 @@ public class Analisis_Lexico
                     else if (" |".equals(aux) && lexema.length() == i+1) 
                     {
                         resultado="Es un comentario";
-                        pseudo_codigo.add("Comentario");
+                        //pseudo_codigo.add("Comentario");//no se agrega al pseudocodigo
                         System.out.println(""+lexema+" "+resultado);
                         estado="q3";
                         bandera=true;
@@ -666,7 +695,7 @@ public class Analisis_Lexico
                             obtenIndex(lexema, 4);
                             //count_id++;
                             //aux="ID"+count_id;
-                            pseudo_codigo.add("Identificador");
+                            pseudo_codigo.add("ID");
                             bandera=true;
                             System.out.println(""+lexema+" es un identificador");
                         } 
@@ -682,7 +711,7 @@ public class Analisis_Lexico
                             obtenIndex(lexema, 4);
                             //count_id++;
                             //aux="ID"+count_id;
-                            pseudo_codigo.add("Identificador");
+                            pseudo_codigo.add("ID");
                             bandera=true;
                             System.out.println(""+lexema+" es un identificador");
                         }   
@@ -732,5 +761,11 @@ public class Analisis_Lexico
 		
 	return cadReturn;
     }
+    
+    public static ArrayList<String> recuperar_pseudo()
+    {
+        return pseudo_codigo;
+    }
+    
    
 }

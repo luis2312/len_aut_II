@@ -582,6 +582,13 @@ static DefaultTableModel modelo;
         }
         jCodigoSintactica.setText("");
         jCodigoSintactica.setText(analisis_lexico.Analisis_Lexico.imprimirMap());
+        
+        //esto es de la fase sintactica
+        tabla_sintactica.cargar_tabla();
+        tabla_sintactica.tabla_sintactica();
+        //
+        
+        
         analisis_lexico.Analisis_Lexico.pseudo_codigo.clear();
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -627,7 +634,7 @@ static DefaultTableModel modelo;
     }//GEN-LAST:event_btnAbrirArchivoActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        tabla_sintactica.cargar_tabla();
+        
     }//GEN-LAST:event_jButton3ActionPerformed
 
     /**

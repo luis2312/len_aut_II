@@ -1,6 +1,7 @@
 
 package analisis_lexico;
 
+import static analisis_lexico.Analisis_Lexico.quitaSalto;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
@@ -9,6 +10,7 @@ public class tokens
 {
     public static ArrayList<String> obtener_tokens(String cadena)
     {
+        cadena=quitaSalto(cadena);
         ArrayList<String> palabras = new ArrayList<>();
         String token = "";
         String concatena="";
