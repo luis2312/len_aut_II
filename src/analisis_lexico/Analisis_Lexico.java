@@ -1,7 +1,6 @@
 
 package analisis_lexico;
 
-import com.sun.org.apache.xml.internal.utils.StringToStringTable;
 import interfaz.Interfaz;
 import static interfaz.Interfaz.reservadas;
 import java.util.ArrayList;

@@ -12,12 +12,15 @@ public class tabla_sintactica
     static ArrayList <ArrayList<TDA>> tabla_sintactica=new ArrayList<>();
     static HashMap<String, Integer> terminales = new HashMap<>();
     static Stack<String> pila = new Stack<>(); 
+    static Stack<String> pila_aux = new Stack<>(); 
     static ArrayList <String> pseudo_c=new ArrayList<>();
+    static ArrayList <String> pseudo_c_aux=new ArrayList<>();
     static TDA nuevo;
     
     public static void tabla_sintactica()
     {
         pseudo_c=recuperar_pseudo();
+        pseudo_c_aux=pseudo_c;//solo como respaldo
         verificador();
     }
     
@@ -32,6 +35,7 @@ public class tabla_sintactica
             if (tabla_sintactica.get(pos).get(i).terminal.equals(aux_pseudo)) 
             {
                 System.out.println("AQUI ESTA LA PRODUCCION"+tabla_sintactica.get(pos).get(i).produccion);
+                meter_pila(tabla_sintactica.get(pos).get(i).produccion);
                 //la produccion que salga se agregara a la pila
             }
         }
@@ -183,8 +187,13 @@ public class tabla_sintactica
         while(st.hasMoreElements())
         {
             token = st.nextToken();
-            pila.push(token);
+            pila_aux.push(token);
         }
+        System.out.println("este es el contenido de la pila "+pila_aux.toString() +" "+pila_aux.size());   
+        for (int i = 0; i < pila_aux.size(); i++) {
+            pila.add(pila_aux.pop());
+        }
+        System.out.println("este es el contenido de la pila "+pila.toString());
     }
     
     
