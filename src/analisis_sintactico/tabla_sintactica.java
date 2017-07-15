@@ -9,23 +9,24 @@ import java.util.StringTokenizer;
 
 public class tabla_sintactica 
 {
-    static ArrayList <ArrayList<TDA>> tabla_sintactica=new ArrayList<>();
-    static HashMap<String, Integer> terminales = new HashMap<>();
-    static Stack<String> pila = new Stack<>(); 
-    static Stack<String> pila_aux = new Stack<>(); 
-    static ArrayList <String> pseudo_c=new ArrayList<>();
-    static ArrayList <String> pseudo_c_aux=new ArrayList<>();
-    static TDA nuevo;
+    public static ArrayList <ArrayList<TDA>> tabla_sintactica=new ArrayList<>();
+    public static HashMap<String, Integer> no_terminales = new HashMap<>();
+    public static Stack<String> pila = new Stack<>(); 
+    public static Stack<String> pila_aux = new Stack<>(); 
+    public static ArrayList <String> pseudo_c=new ArrayList<>();
+    public static Object pseudo_c_aux=new ArrayList<>();
+    public static TDA nuevo;
     
     public static void tabla_sintactica()
     {
         pseudo_c=recuperar_pseudo();
-        pseudo_c_aux=pseudo_c;//solo como respaldo
+        pseudo_c_aux=pseudo_c.clone();//solo como respaldo
         verificador();
     }
     
     public static void verificador()
     {
+        boolean verifica = true;
         String inicio = "PROGRAMA";
         String aux_pseudo = pseudo_c.get(0);
         int pos;
@@ -40,12 +41,71 @@ public class tabla_sintactica
             }
         }
         
+        //englobar en try catch
+        ////SI ES UN TERMINAL
+        while(verifica && !pila.empty())
+        {
+            if (pila.lastElement().equals("inicio")||pila.lastElement().equals("TIPO")||pila.lastElement().equals("ID")
+            ||pila.lastElement().equals("while")||pila.lastElement().equals("if")||pila.lastElement().equals("switch")
+            ||pila.lastElement().equals("default")||pila.lastElement().equals("else_if")||pila.lastElement().equals("else")
+            ||pila.lastElement().equals("case")||pila.lastElement().equals("constante")||pila.lastElement().equals("OPERADOR_ARITMATICO")
+            ||pila.lastElement().equals("}")||pila.lastElement().equals(")")||pila.lastElement().equals(";")||pila.lastElement().equals(",")
+            ||pila.lastElement().equals("OPERADOR_LOGICO")||pila.lastElement().equals("OPERADOR_BOOLEANO")||pila.lastElement().equals("{")||pila.lastElement().equals("fin")) 
+            {
+                if (pila.lastElement().equals(pseudo_c.get(0))) 
+                {
+                    pila.pop();
+                    pseudo_c.remove(0);
+                }
+                else
+                    verifica=false;
+
+            }
+            else if (pila.lastElement().matches("ERROR_LEXICO")) {
+                verifica=false;
+            }
+            else
+            {
+                aux_pseudo = pseudo_c.get(0);
+                System.out.println("esto va aqui "+pila.lastElement());
+                pos=recuperar_terminal(pila.lastElement());
+                //if pos igual a 100 marcar error
+                for (int i = 0; i < tabla_sintactica.get(pos).size(); i++) 
+                {
+                    if (tabla_sintactica.get(pos).get(i).terminal.equals(aux_pseudo)) 
+                    {
+                        System.out.println("AQUI ESTA LA PRODUCCION"+tabla_sintactica.get(pos).get(i).produccion);
+                        if (tabla_sintactica.get(pos).get(i).produccion.equals("vacio")) 
+                        {
+                            pila.pop();
+                        }
+                        else if (tabla_sintactica.get(pos).get(i).produccion.equals("error")) 
+                        {//se encontro un error
+                            verifica=false;
+                        }
+                        else
+                        { 
+                            pila.pop();
+                            meter_pila(tabla_sintactica.get(pos).get(i).produccion);
+                        }
+                       
+                        //la produccion que salga se agregara a la pila
+                    }
+                }
+            }
+        }
+        if (verifica)
+            System.out.println("TERMINO");
+        else
+            System.out.println("ERROR SINTACTICO");
+        
+        
     }
     
     
     public static void cargar_tabla()
     {
-        mapa_terminales();
+        mapa_no_terminales();
         for (int i = 0; i < 18; i++) 
         {
             tabla_sintactica.add(new ArrayList<TDA>());
@@ -53,13 +113,29 @@ public class tabla_sintactica
         //PROGRAMA => 0
         nuevo=new TDA();        nuevo.terminal="inicio";        nuevo.produccion="inicio { CUERPO } fin";        tabla_sintactica.get(0).add(nuevo);
         nuevo=new TDA();        nuevo.terminal="}";        nuevo.produccion="vacio";        tabla_sintactica.get(0).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal="TIPO";        nuevo.produccion="error";        tabla_sintactica.get(0).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal=",";        nuevo.produccion="error";        tabla_sintactica.get(0).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal="ID";        nuevo.produccion="error";        tabla_sintactica.get(0).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal="while";        nuevo.produccion="error";        tabla_sintactica.get(0).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal="if";        nuevo.produccion="error";        tabla_sintactica.get(0).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal="switch";        nuevo.produccion="error";        tabla_sintactica.get(0).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal="default";        nuevo.produccion="error";        tabla_sintactica.get(0).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal="else_if";        nuevo.produccion="error";        tabla_sintactica.get(0).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal="else";        nuevo.produccion="error";        tabla_sintactica.get(0).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal="case";        nuevo.produccion="error";        tabla_sintactica.get(0).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal="constante";        nuevo.produccion="error";        tabla_sintactica.get(0).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal="operador_aritmetico";        nuevo.produccion="error";        tabla_sintactica.get(0).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal=")";        nuevo.produccion="error";        tabla_sintactica.get(0).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal=";";        nuevo.produccion="error";        tabla_sintactica.get(0).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal="OPERADOR_LOGICO";        nuevo.produccion="error";        tabla_sintactica.get(0).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal="OPERADOR_BOOLEANO";        nuevo.produccion="error";        tabla_sintactica.get(0).add(nuevo);
         
         //CUERPO => 1
         nuevo=new TDA();        nuevo.terminal="TIPO";        nuevo.produccion="DECLARACION LISTA_SENTENCIAS";        tabla_sintactica.get(1).add(nuevo);
         nuevo=new TDA();        nuevo.terminal="}";        nuevo.produccion="vacio";        tabla_sintactica.get(1).add(nuevo);
         
         //DECLARACION => 2
-        nuevo=new TDA();        nuevo.terminal="TIPO";        nuevo.produccion="TIPO Identificador DECLARACION'";        tabla_sintactica.get(2).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal="TIPO";        nuevo.produccion="TIPO ID DECLARACION'";        tabla_sintactica.get(2).add(nuevo);
         nuevo=new TDA();        nuevo.terminal="ID";        nuevo.produccion="vacio";        tabla_sintactica.get(2).add(nuevo);
         nuevo=new TDA();        nuevo.terminal="while";        nuevo.produccion="vacio";        tabla_sintactica.get(2).add(nuevo);
         nuevo=new TDA();        nuevo.terminal="if";        nuevo.produccion="vacio";        tabla_sintactica.get(2).add(nuevo);
@@ -67,8 +143,24 @@ public class tabla_sintactica
         nuevo=new TDA();        nuevo.terminal="}";        nuevo.produccion="vacio";        tabla_sintactica.get(2).add(nuevo);
         
         //DECLARACION' => 3
-        nuevo=new TDA();        nuevo.terminal=",";        nuevo.produccion=", TIPO Identificador DECLARACION'";        tabla_sintactica.get(3).add(nuevo);
-        nuevo=new TDA();        nuevo.terminal=";";        nuevo.produccion="vacio";        tabla_sintactica.get(3).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal=",";        nuevo.produccion=", TIPO ID DECLARACION'";        tabla_sintactica.get(3).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal=";";        nuevo.produccion=";";        tabla_sintactica.get(3).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal="inicio";        nuevo.produccion="inicio { CUERPO } fin";        tabla_sintactica.get(3).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal="}";        nuevo.produccion="vacio";        tabla_sintactica.get(3).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal="TIPO";        nuevo.produccion="error";        tabla_sintactica.get(3).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal="ID";        nuevo.produccion="error";        tabla_sintactica.get(3).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal="while";        nuevo.produccion="error";        tabla_sintactica.get(3).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal="if";        nuevo.produccion="error";        tabla_sintactica.get(3).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal="switch";        nuevo.produccion="error";        tabla_sintactica.get(3).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal="default";        nuevo.produccion="error";        tabla_sintactica.get(3).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal="else_if";        nuevo.produccion="error";        tabla_sintactica.get(3).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal="else";        nuevo.produccion="error";        tabla_sintactica.get(3).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal="case";        nuevo.produccion="error";        tabla_sintactica.get(3).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal="constante";        nuevo.produccion="error";        tabla_sintactica.get(3).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal="operador_aritmetico";        nuevo.produccion="error";        tabla_sintactica.get(3).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal=")";        nuevo.produccion="error";        tabla_sintactica.get(3).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal="OPERADOR_LOGICO";        nuevo.produccion="error";        tabla_sintactica.get(3).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal="OPERADOR_BOOLEANO";        nuevo.produccion="error";        tabla_sintactica.get(3).add(nuevo);
         
         //LISTA_SENTENCIAS => 4
         nuevo=new TDA();        nuevo.terminal="ID";        nuevo.produccion="SENTENCIA LISTA_SENTENCIAS'";        tabla_sintactica.get(4).add(nuevo);
@@ -85,10 +177,10 @@ public class tabla_sintactica
         nuevo=new TDA();        nuevo.terminal="}";        nuevo.produccion="vacio";        tabla_sintactica.get(5).add(nuevo);
         
         //SENTENCIAS => 6
-        nuevo=new TDA();        nuevo.terminal="ID";        nuevo.produccion="Identificador = EXPRESION_SIMPLE ;";        tabla_sintactica.get(6).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal="ID";        nuevo.produccion="ID = EXPRESION_SIMPLE ;";        tabla_sintactica.get(6).add(nuevo);
         nuevo=new TDA();        nuevo.terminal="while";        nuevo.produccion="while ( EXPRESION ) { LISTA_SENTENCIAS }";        tabla_sintactica.get(6).add(nuevo);
         nuevo=new TDA();        nuevo.terminal="if";        nuevo.produccion="if ( EXPRESION ) { LISTA_SENTENCIAS } FIN_IF";        tabla_sintactica.get(6).add(nuevo);
-        nuevo=new TDA();        nuevo.terminal="switch";        nuevo.produccion="switch ( Identificador ) { LISTA_CASE FIN_SWITCH";        tabla_sintactica.get(6).add(nuevo);
+        nuevo=new TDA();        nuevo.terminal="switch";        nuevo.produccion="switch ( ID ) { LISTA_CASE FIN_SWITCH";        tabla_sintactica.get(6).add(nuevo);
         
         //FIN_SWITCH => 7
         nuevo=new TDA();        nuevo.terminal="default";        nuevo.produccion="DEFAULT }";        tabla_sintactica.get(7).add(nuevo);
@@ -143,26 +235,26 @@ public class tabla_sintactica
         
     }
     
-    public static void mapa_terminales()
+    public static void mapa_no_terminales()
     {
-        terminales.put("PROGRAMA", 0);
-        terminales.put("CUERPO", 1);
-        terminales.put("DECLARACION", 2);
-        terminales.put("DECLARACION'", 3);
-        terminales.put("LISTA_SENTENCIAS", 4);
-        terminales.put("LISTA_SENTENCIAS'", 5);
-        terminales.put("SENTENCIA", 6);
-        terminales.put("FIN_SWITCH", 7);
-        terminales.put("FIN_IF", 8);
-        terminales.put("FIN_ELSE", 9);
-        terminales.put("LISTA_CASE", 10);
-        terminales.put("LISTA_CASE'", 11);
-        terminales.put("CASE", 12);
-        terminales.put("DEFAULT", 13);
-        terminales.put("EXPRESION", 14);
-        terminales.put("EXPRESION'", 15);
-        terminales.put("EXPRESION_SIMPLE", 16);
-        terminales.put("EXPRESION_SIMPLE'", 17);
+        no_terminales.put("PROGRAMA", 0);
+        no_terminales.put("CUERPO", 1);
+        no_terminales.put("DECLARACION", 2);
+        no_terminales.put("DECLARACION'", 3);
+        no_terminales.put("LISTA_SENTENCIAS", 4);
+        no_terminales.put("LISTA_SENTENCIAS'", 5);
+        no_terminales.put("SENTENCIA", 6);
+        no_terminales.put("FIN_SWITCH", 7);
+        no_terminales.put("FIN_IF", 8);
+        no_terminales.put("FIN_ELSE", 9);
+        no_terminales.put("LISTA_CASE", 10);
+        no_terminales.put("LISTA_CASE'", 11);
+        no_terminales.put("CASE", 12);
+        no_terminales.put("DEFAULT", 13);
+        no_terminales.put("EXPRESION", 14);
+        no_terminales.put("EXPRESION'", 15);
+        no_terminales.put("EXPRESION_SIMPLE", 16);
+        no_terminales.put("EXPRESION_SIMPLE'", 17);
     }
     
     public static int recuperar_terminal(String terminal)
@@ -170,7 +262,7 @@ public class tabla_sintactica
         int valor=0;
         try
         {
-            valor=terminales.get(terminal);
+            valor=no_terminales.get(terminal);
         }
         catch (Exception e)
         {
@@ -183,14 +275,15 @@ public class tabla_sintactica
     public static void meter_pila(String produccion)
     {
         String token = "";
+        int t;
         StringTokenizer st = new StringTokenizer(produccion, " ");
         while(st.hasMoreElements())
         {
             token = st.nextToken();
             pila_aux.push(token);
         }
-        System.out.println("este es el contenido de la pila "+pila_aux.toString() +" "+pila_aux.size());   
-        for (int i = 0; i < pila_aux.size(); i++) {
+        t=pila_aux.size();
+        for (int i = 0; i < t; i++) {
             pila.add(pila_aux.pop());
         }
         System.out.println("este es el contenido de la pila "+pila.toString());

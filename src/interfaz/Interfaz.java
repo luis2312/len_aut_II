@@ -19,6 +19,7 @@ import static analisis_lexico.Analisis_Lexico.funcion_hash;
 import static analisis_lexico.Analisis_Lexico.indexar;
 import static analisis_lexico.tokens.obtener_tokens;
 import analisis_sintactico.tabla_sintactica;
+import static analisis_sintactico.tabla_sintactica.pseudo_c;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -584,7 +585,10 @@ static DefaultTableModel modelo;
         jCodigoSintactica.setText(analisis_lexico.Analisis_Lexico.imprimirMap());
         
         //esto es de la fase sintactica
-        tabla_sintactica.cargar_tabla();
+        tabla_sintactica.pila.clear();//quitar cuando se cambie cargar tabla
+        tabla_sintactica.no_terminales.clear();//quitar cuando se cambie cargar tabla
+        tabla_sintactica.tabla_sintactica.clear();//quitar cuando se cambie cargar tabla
+        tabla_sintactica.cargar_tabla();//solo al inicio del programa
         tabla_sintactica.tabla_sintactica();
         //
         

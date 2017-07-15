@@ -290,6 +290,7 @@ public class Analisis_Lexico
                 }if (!bandera && !bandera2 && !bandera3 && !bandera4)
                 {
                     Interfaz.desconocidos(palabras.get(i));
+                    pseudo_codigo.add("ERROR_LEXICO");
                     System.out.println("error en la liena : U" +linea);
                 }
                    
