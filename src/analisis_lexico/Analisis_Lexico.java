@@ -52,17 +52,18 @@ public class Analisis_Lexico
         }
        
         //datos definidos
-        
         //Palabras reservadas
         obtenIndex("inicio", 1);
         obtenIndex("fin", 1);
         obtenIndex("while", 1);
-        obtenIndex("if_else", 1);
+        obtenIndex("switch", 1);
+        obtenIndex("else", 1);
+        obtenIndex("else_if", 1);
         obtenIndex("if", 1);
         obtenIndex("case", 1);
         obtenIndex("default", 1);
-        obtenIndex("identificador", 1);
-        obtenIndex("constante", 1);
+        obtenIndex("ID", 1);
+        obtenIndex("Constante", 1);
         obtenIndex("int", 1);
         obtenIndex("float", 1);
         obtenIndex("double", 1);
@@ -97,6 +98,7 @@ public class Analisis_Lexico
         obtenIndex(")", 5);
         obtenIndex(",", 5);
         obtenIndex("(", 5);
+        obtenIndex(":", 5);
         
         //Operadores Booleanos
         obtenIndex("||", 6);
