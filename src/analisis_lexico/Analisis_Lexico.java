@@ -16,6 +16,7 @@ public class Analisis_Lexico
     static ArrayList <ArrayList<String>> tabla_delimitador;
     static ArrayList <ArrayList<String>> tabla_operadoresBoo;
     public static ArrayList <String> pseudo_codigo=new ArrayList<>();
+    public static ArrayList <String> errores_lexicos=new ArrayList<>();
     static int count_pal_re=0, count_id=0, count_oper_arit=0, count_oper_log=0;
     //identificadores, numeros, strings
     
@@ -103,6 +104,8 @@ public class Analisis_Lexico
         //Operadores Booleanos
         obtenIndex("||", 6);
         obtenIndex("&&", 6);
+        
+        
         
     }
     
@@ -294,6 +297,8 @@ public class Analisis_Lexico
                     Interfaz.desconocidos(palabras.get(i));
                     pseudo_codigo.add("ERROR_LEXICO");
                     System.out.println("error en la liena : U" +linea);
+                    errores_lexicos.add(palabras.get(i));
+                    errores_lexicos.add(""+linea);
                 }
                    
                 
