@@ -2,7 +2,10 @@
 package analisis_sintactico;
 
 import static analisis_lexico.Analisis_Lexico.recuperar_pseudo;
+import analisis_lexico.TDA_pseudo_codigo;
+import interfaz.Panel_sintactico;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Stack;
 import java.util.StringTokenizer;
@@ -13,9 +16,11 @@ public class tabla_sintactica
     public static HashMap<String, Integer> no_terminales = new HashMap<>();
     public static Stack<String> pila = new Stack<>(); 
     public static Stack<String> pila_aux = new Stack<>(); 
-    public static ArrayList <String> pseudo_c=new ArrayList<>();
+    //public static ArrayList <String> pseudo_c=new ArrayList<>();
+    public static ArrayList <TDA_pseudo_codigo> pseudo_c=new ArrayList<>();
     public static Object pseudo_c_aux=new ArrayList<>();
     public static TDA nuevo;
+    public static String error_sintactico="";
     
     public static void tabla_sintactica()
     {
@@ -34,7 +39,7 @@ public class tabla_sintactica
         
         if (pseudo_c.size()>1) 
         {
-            aux_pseudo = pseudo_c.get(0);
+            aux_pseudo = pseudo_c.get(0).token;
             pos=recuperar_terminal(inicio);
             for (int i = 0; i < tabla_sintactica.get(pos).size(); i++) 
             {
@@ -58,30 +63,35 @@ public class tabla_sintactica
                 {
                     if (pila.lastElement().equals("TERMINO")) 
                     {
-                        if (pseudo_c.get(0).equals("ID") || pseudo_c.get(0).equals("Constante")) {
+                        if (pseudo_c.get(0).token.equals("ID") || pseudo_c.get(0).token.equals("Constante")) {
                             pila.pop();
                             pseudo_c.remove(0);
                         }
                     }
-                    else if (pila.lastElement().equals(pseudo_c.get(0))) 
+                    else if (pila.lastElement().equals(pseudo_c.get(0).token)) 
                     {
                         pila.pop();
                         pseudo_c.remove(0);
                     }
                     else
+                    {
                         verifica=false;
-
+                        error_sintactico=error_sintactico+"Error en la linea "+pseudo_c.get(0).linea +" se esperaba "+pila.lastElement();
+                    }
                 }
-                else if (pila.lastElement().matches("ERROR_LEXICO")) {
+                else if (pila.lastElement().matches("ERROR_LEXICO")) 
+                {
+                    error_sintactico=error_sintactico+"Error en la linea "+pseudo_c.get(0).linea +" se esperaba "+pila.lastElement();
                     verifica=false;
                 }
                 else
                 {
-                    aux_pseudo = pseudo_c.get(0);
+                    aux_pseudo = pseudo_c.get(0).token;
                     System.out.println("Codigo "+aux_pseudo);
                     System.out.println("PILA "+pila.lastElement());
                     pos=recuperar_terminal(pila.lastElement());
                     if (pos==100) {
+                        error_sintactico=error_sintactico+"Error en la linea "+pseudo_c.get(0).linea +" se esperaba "+pila.lastElement();
                         System.out.println("Error");
                     }
                     else if (pos>=0 && pos<=17)
@@ -90,6 +100,7 @@ public class tabla_sintactica
                         {
                             if (i==tabla_sintactica.get(pos).size()-1 && !tabla_sintactica.get(pos).get(i).terminal.equals(aux_pseudo) && !encontro) 
                             {
+                                error_sintactico=error_sintactico+"Error en la linea "+pseudo_c.get(0).linea +" se esperaba "+pila.lastElement();
                                 verifica=false;
                                 encontro=true;
                                 break;
@@ -105,6 +116,7 @@ public class tabla_sintactica
                                 }
                                 else if (tabla_sintactica.get(pos).get(i).produccion.equals("error")) 
                                 {//se encontro un error
+                                    error_sintactico=error_sintactico+"Error en la linea "+pseudo_c.get(0).linea +" se esperaba "+pila.lastElement();
                                     verifica=false;
                                     break;
                                 }
@@ -120,7 +132,7 @@ public class tabla_sintactica
                     
                 }
                 System.out.println("este es el contenido de la pila "+pila.toString());
-                System.out.println("este es el contenido del codigo  "+pseudo_c.toString());
+                System.out.println("este es el contenido del codigo  "+Arrays.toString(pseudo_c.toArray()));
             }
         }
         
@@ -134,6 +146,9 @@ public class tabla_sintactica
         }
         else if (encontro || !verifica)
             System.out.println("ERROR SINTACTICO");
+        
+        Panel_sintactico.txtSintactico.setText(error_sintactico);
+        error_sintactico="";
         
         
     }

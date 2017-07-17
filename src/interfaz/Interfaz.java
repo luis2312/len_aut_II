@@ -22,6 +22,8 @@ import static analisis_lexico.Analisis_Lexico.pseudo_codigo;
 import static analisis_lexico.tokens.obtener_tokens;
 import analisis_sintactico.tabla_sintactica;
 import static analisis_sintactico.tabla_sintactica.pseudo_c;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -52,14 +54,34 @@ static DefaultTableModel modelo;
        static Object datosI[] = new Object[100]; //Identificadores
        static Object datosCa[] = new Object[100]; //Cadenas
        static Object datosDesco[] = new Object[100]; //Desconocidos
+       public static Panel_sintactico P_sintactico;
+       public static Panel_lexico P_lexico;
+       public static Panel_semantico P_semantico;
 /**
      * Creates new form Interfaz
      */
     public Interfaz() {
         initComponents();
-         modelo=(DefaultTableModel) jTable1.getModel();
-       modelo.addColumn("Token"); modelo.addColumn("Tipo");
-
+        this.setBackground(Color.yellow);
+        btnLexicos.setEnabled(false);
+        
+        P_sintactico = new Panel_sintactico();
+        P_sintactico.setSize(789, 184);
+        P_sintactico.setLocation(5,5);
+                
+        P_lexico = new Panel_lexico();
+        P_lexico.setSize(789, 184);
+        P_lexico.setLocation(5,5);
+        PanelPrincipal.removeAll();
+        PanelPrincipal.add(P_lexico, BorderLayout.CENTER);
+        PanelPrincipal.revalidate();
+        PanelPrincipal.repaint();
+        
+        P_semantico = new Panel_semantico();
+        P_semantico.setSize(789, 184);
+        P_semantico.setLocation(5,5);
+        modelo=(DefaultTableModel) jTable1.getModel();
+        modelo.addColumn("Token"); modelo.addColumn("Tipo");
     }
    
     public static void reservadas(String dato){
@@ -136,11 +158,6 @@ static DefaultTableModel modelo;
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jPanel1 = new javax.swing.JPanel();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        jErrores = new javax.swing.JEditorPane();
-        jLabel2 = new javax.swing.JLabel();
         jToolBar1 = new javax.swing.JToolBar();
         btnAbrirArchivo = new javax.swing.JButton();
         btnGuardarArchivo = new javax.swing.JButton();
@@ -150,21 +167,31 @@ static DefaultTableModel modelo;
         jScrollPane6 = new javax.swing.JScrollPane();
         jCodigoSintactica = new javax.swing.JEditorPane();
         jLabel3 = new javax.swing.JLabel();
+        PanelPrincipal = new javax.swing.JPanel();
+        btnSintacticos = new javax.swing.JButton();
+        btnLexicos = new javax.swing.JButton();
+        btnSemanticos = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Birdy++");
         setAutoRequestFocus(false);
-        setBackground(java.awt.Color.white);
+        setBackground(new java.awt.Color(153, 51, 255));
+        setForeground(new java.awt.Color(102, 102, 102));
         setIconImage(img.getImage());
 
+        jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
         jPanel2.setBackground(java.awt.Color.white);
+        jPanel2.setAutoscrolls(true);
 
         Lineas.setEditable(false);
         Lineas.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         Lineas.setText("1");
+        Lineas.setAutoscrolls(false);
         Lineas.setOpaque(false);
 
         txtATexto1.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        txtATexto1.setAutoscrolls(false);
         txtATexto1.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         txtATexto1.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -182,28 +209,29 @@ static DefaultTableModel modelo;
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addComponent(Lineas, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtATexto1, javax.swing.GroupLayout.PREFERRED_SIZE, 612, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(labelLineas, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(695, 695, 695)
+                        .addComponent(labelLineas, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(Lineas, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtATexto1, javax.swing.GroupLayout.PREFERRED_SIZE, 612, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(115, 115, 115))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(txtATexto1, javax.swing.GroupLayout.PREFERRED_SIZE, 584, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(Lineas))
-                .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(366, Short.MAX_VALUE)
                 .addComponent(labelLineas)
                 .addGap(226, 226, 226))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(txtATexto1, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
+                    .addComponent(Lineas))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jScrollPane2.setViewportView(jPanel2);
@@ -215,33 +243,6 @@ static DefaultTableModel modelo;
 
         jLabel1.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLabel1.setText("Tabla de simbolos");
-
-        jScrollPane3.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane3.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-
-        jErrores.setEditable(false);
-        jErrores.setBackground(java.awt.SystemColor.control);
-        jScrollPane4.setViewportView(jErrores);
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 745, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(53, Short.MAX_VALUE))
-        );
-
-        jScrollPane3.setViewportView(jPanel1);
-
-        jLabel2.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
-        jLabel2.setText("Errores");
-        jLabel2.setToolTipText("");
 
         jToolBar1.setBorder(javax.swing.BorderFactory.createCompoundBorder());
         jToolBar1.setRollover(true);
@@ -280,6 +281,8 @@ static DefaultTableModel modelo;
         });
         jToolBar1.add(jButton2);
 
+        jScrollPane5.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
         jCodigoSintactica.setEditable(false);
         jScrollPane6.setViewportView(jCodigoSintactica);
 
@@ -287,19 +290,53 @@ static DefaultTableModel modelo;
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 48, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE)
+            .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)
         );
 
         jScrollPane5.setViewportView(jPanel3);
 
-        jLabel3.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLabel3.setText("Pseudo Codigo");
+
+        PanelPrincipal.setBackground(new java.awt.Color(204, 204, 204));
+
+        javax.swing.GroupLayout PanelPrincipalLayout = new javax.swing.GroupLayout(PanelPrincipal);
+        PanelPrincipal.setLayout(PanelPrincipalLayout);
+        PanelPrincipalLayout.setHorizontalGroup(
+            PanelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        PanelPrincipalLayout.setVerticalGroup(
+            PanelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        btnSintacticos.setText("Errores Sintacticos");
+        btnSintacticos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSintacticosActionPerformed(evt);
+            }
+        });
+
+        btnLexicos.setText("Errores Lexicos");
+        btnLexicos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLexicosActionPerformed(evt);
+            }
+        });
+
+        btnSemanticos.setText("Errores Semanticos");
+        btnSemanticos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSemanticosActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -308,14 +345,21 @@ static DefaultTableModel modelo;
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 746, Short.MAX_VALUE)
-                    .addComponent(jScrollPane3)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 581, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(10, 10, 10)
+                        .addComponent(btnLexicos)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnSintacticos)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnSemanticos)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 799, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 581, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(PanelPrincipal, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(10, 10, 10)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
@@ -327,7 +371,9 @@ static DefaultTableModel modelo;
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(132, 132, 132)
+                                .addComponent(jLabel3)))
                         .addGap(19, 19, 19))))
         );
         layout.setVerticalGroup(
@@ -342,20 +388,20 @@ static DefaultTableModel modelo;
                         .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 429, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel3))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addComponent(jLabel2)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnSintacticos)
+                        .addComponent(btnSemanticos)
+                        .addComponent(btnLexicos))
+                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane5)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addContainerGap(39, Short.MAX_VALUE))
+                    .addComponent(PanelPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -364,7 +410,7 @@ static DefaultTableModel modelo;
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         //
         
-        jErrores.setText("");
+        Panel_lexico.txtLexico.setText("");
         modelo.setRowCount(0);
         Preservadas.clear();
         Operadores.clear();
@@ -406,12 +452,13 @@ static DefaultTableModel modelo;
         
         if (!errores_lexicos.isEmpty())
         {
-            for(int k=0;k<errores_lexicos.size()/2;k++)
+            error="";
+            for(int k=0;k<errores_lexicos.size();k=k+2)
             {
-                error="Error en la linea: " + errores_lexicos.get(k+1) + " en la palabra: " + errores_lexicos.get(k);
+                error=error+"Error en la linea: " + errores_lexicos.get(k+1) + " en la palabra: " + errores_lexicos.get(k)+"\n";
             }
         }
-        jErrores.setText(error);
+        Panel_lexico.txtLexico.setText(error);
         
         errores_lexicos.clear();
         error="Correcto";
@@ -496,6 +543,40 @@ static DefaultTableModel modelo;
         labelLineas.setText(lineas);
     }//GEN-LAST:event_txtATexto1KeyPressed
 
+    private void btnSintacticosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSintacticosActionPerformed
+        btnLexicos.setEnabled(true);
+        btnSemanticos.setEnabled(true);
+        btnSintacticos.setEnabled(false);
+        
+        PanelPrincipal.removeAll();
+        PanelPrincipal.add(P_sintactico, BorderLayout.CENTER);
+        PanelPrincipal.revalidate();
+        PanelPrincipal.repaint();
+    }//GEN-LAST:event_btnSintacticosActionPerformed
+
+    private void btnLexicosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLexicosActionPerformed
+        btnLexicos.setEnabled(false);
+        btnSemanticos.setEnabled(true);
+        btnSintacticos.setEnabled(true);
+        
+        PanelPrincipal.removeAll();
+        PanelPrincipal.add(P_lexico, BorderLayout.CENTER);
+        PanelPrincipal.revalidate();
+        PanelPrincipal.repaint();
+
+    }//GEN-LAST:event_btnLexicosActionPerformed
+
+    private void btnSemanticosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSemanticosActionPerformed
+        btnLexicos.setEnabled(true);
+        btnSemanticos.setEnabled(false);
+        btnSintacticos.setEnabled(true);
+        
+        PanelPrincipal.removeAll();
+        PanelPrincipal.add(P_semantico, BorderLayout.CENTER);
+        PanelPrincipal.revalidate();
+        PanelPrincipal.repaint();
+    }//GEN-LAST:event_btnSemanticosActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -537,21 +618,20 @@ static DefaultTableModel modelo;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JEditorPane Lineas;
+    private javax.swing.JPanel PanelPrincipal;
     private javax.swing.JButton btnAbrirArchivo;
     private javax.swing.JButton btnGuardarArchivo;
+    private javax.swing.JButton btnLexicos;
+    private javax.swing.JButton btnSemanticos;
+    private javax.swing.JButton btnSintacticos;
     private javax.swing.JButton jButton2;
     private javax.swing.JEditorPane jCodigoSintactica;
-    private javax.swing.JEditorPane jErrores;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JTable jTable1;
