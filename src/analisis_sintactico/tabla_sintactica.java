@@ -63,7 +63,7 @@ public class tabla_sintactica
                 if (pila.lastElement().equals("inicio")||pila.lastElement().equals("TIPO")||pila.lastElement().equals("ID")
                 ||pila.lastElement().equals("while")||pila.lastElement().equals("if")||pila.lastElement().equals("switch")
                 ||pila.lastElement().equals("default")||pila.lastElement().equals("else_if")||pila.lastElement().equals("else")
-                ||pila.lastElement().equals("case")||pila.lastElement().equals("Constante")||pila.lastElement().equals("OPERADOR_ARITMATICO")
+                ||pila.lastElement().equals("case")||pila.lastElement().equals("Constante")||pila.lastElement().equals("OPERADOR_ARITMETICO")
                 ||pila.lastElement().equals("}")||pila.lastElement().equals(")")||pila.lastElement().equals(";")||pila.lastElement().equals(",")
                 ||pila.lastElement().equals("OPERADOR_LOGICO")||pila.lastElement().equals("OPERADOR_BOOLEANO")||pila.lastElement().equals("{")
                 ||pila.lastElement().equals("fin")||pila.lastElement().equals("(")||pila.lastElement().equals("TERMINO")
