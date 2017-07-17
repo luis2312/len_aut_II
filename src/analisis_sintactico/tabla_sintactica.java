@@ -20,7 +20,7 @@ public class tabla_sintactica
     public static ArrayList <TDA_pseudo_codigo> pseudo_c=new ArrayList<>();
     public static Object pseudo_c_aux=new ArrayList<>();
     public static TDA nuevo;
-    public static String error_sintactico="";
+    public static String error_sintactico="", sig="";
     
     public static void tabla_sintactica()
     {
@@ -36,6 +36,7 @@ public class tabla_sintactica
         String inicio = "PROGRAMA";
         String aux_pseudo;
         int pos;
+        boolean primera=false;
         
         if (pseudo_c.size()>1) 
         {
@@ -48,6 +49,13 @@ public class tabla_sintactica
                     System.out.println("AQUI ESTA LA PRODUCCION"+tabla_sintactica.get(pos).get(i).produccion);
                     meter_pila(tabla_sintactica.get(pos).get(i).produccion);
                     //la produccion que salga se agregara a la pila
+                    primera=true;
+                    break;
+                }
+                else if(i+1==tabla_sintactica.get(pos).size()&&!primera)
+                {
+                    error_sintactico=error_sintactico+"Error en la linea 1 se esperaba 1.-inicio";
+                    break;
                 }
             }
             while(verifica && !encontro && !pila.empty())
@@ -76,12 +84,14 @@ public class tabla_sintactica
                     else
                     {
                         verifica=false;
-                        error_sintactico=error_sintactico+"Error en la linea "+pseudo_c.get(0).linea +" se esperaba "+pila.lastElement();
+                        sig=buscar_siguiente(pila.lastElement());
+                        error_sintactico=error_sintactico+"Error en la linea "+pseudo_c.get(0).linea +" "+sig;
                     }
                 }
                 else if (pila.lastElement().matches("ERROR_LEXICO")) 
                 {
-                    error_sintactico=error_sintactico+"Error en la linea "+pseudo_c.get(0).linea +" se esperaba "+pila.lastElement();
+                    sig=buscar_siguiente(pila.lastElement());
+                    error_sintactico=error_sintactico+"Error en la linea "+pseudo_c.get(0).linea +" "+sig;
                     verifica=false;
                 }
                 else
@@ -91,7 +101,8 @@ public class tabla_sintactica
                     System.out.println("PILA "+pila.lastElement());
                     pos=recuperar_terminal(pila.lastElement());
                     if (pos==100) {
-                        error_sintactico=error_sintactico+"Error en la linea "+pseudo_c.get(0).linea +" se esperaba "+pila.lastElement();
+                        sig=buscar_siguiente(pila.lastElement());
+                        error_sintactico=error_sintactico+"Error en la linea "+pseudo_c.get(0).linea +" "+sig;
                         System.out.println("Error");
                     }
                     else if (pos>=0 && pos<=17)
@@ -100,7 +111,8 @@ public class tabla_sintactica
                         {
                             if (i==tabla_sintactica.get(pos).size()-1 && !tabla_sintactica.get(pos).get(i).terminal.equals(aux_pseudo) && !encontro) 
                             {
-                                error_sintactico=error_sintactico+"Error en la linea "+pseudo_c.get(0).linea +" se esperaba "+pila.lastElement();
+                                sig=buscar_siguiente(pila.lastElement());
+                                error_sintactico=error_sintactico+"Error en la linea "+pseudo_c.get(0).linea +" "+sig;
                                 verifica=false;
                                 encontro=true;
                                 break;
@@ -116,7 +128,8 @@ public class tabla_sintactica
                                 }
                                 else if (tabla_sintactica.get(pos).get(i).produccion.equals("error")) 
                                 {//se encontro un error
-                                    error_sintactico=error_sintactico+"Error en la linea "+pseudo_c.get(0).linea +" se esperaba "+pila.lastElement();
+                                    sig=buscar_siguiente(pila.lastElement());
+                                    error_sintactico=error_sintactico+"Error en la linea "+pseudo_c.get(0).linea +" "+sig;
                                     verifica=false;
                                     break;
                                 }
@@ -143,6 +156,7 @@ public class tabla_sintactica
         {
             System.out.println("TERMINO");
             pila.removeAllElements();
+            error_sintactico="Correcto";
         }
         else if (encontro || !verifica)
             System.out.println("ERROR SINTACTICO");
@@ -153,6 +167,25 @@ public class tabla_sintactica
         
     }
     
+    public static String buscar_siguiente(String id)
+    {
+        String siguientes="se esperaba ( ";
+        int pos=0;
+        pos=recuperar_terminal(id);
+        if (pos==100) 
+        {
+            siguientes=siguientes+pila.lastElement();          
+        }
+        else
+        {
+            for (int i = 0; i < tabla_sintactica.get(pos).size(); i++) 
+            {
+                siguientes=siguientes+" "+(i+1)+".- "+tabla_sintactica.get(pos).get(i).terminal+"  ";
+            }
+            siguientes=siguientes+" )";
+        }
+        return siguientes;
+    }
     
     public static void cargar_tabla()
     {
@@ -188,8 +221,8 @@ public class tabla_sintactica
         //DECLARACION' => 3
         nuevo=new TDA();        nuevo.terminal=",";        nuevo.produccion=", TIPO ID DECLARACION'";        tabla_sintactica.get(3).add(nuevo);
         nuevo=new TDA();        nuevo.terminal=";";        nuevo.produccion=";";        tabla_sintactica.get(3).add(nuevo);
-        nuevo=new TDA();        nuevo.terminal="inicio";        nuevo.produccion="inicio { CUERPO } fin";        tabla_sintactica.get(3).add(nuevo);
-        nuevo=new TDA();        nuevo.terminal="}";        nuevo.produccion="vacio";        tabla_sintactica.get(3).add(nuevo);
+        //nuevo=new TDA();        nuevo.terminal="inicio";        nuevo.produccion="inicio { CUERPO } fin";        tabla_sintactica.get(3).add(nuevo);
+        //nuevo=new TDA();        nuevo.terminal="}";        nuevo.produccion="vacio";        tabla_sintactica.get(3).add(nuevo);
     
         //LISTA_SENTENCIAS => 4
         nuevo=new TDA();        nuevo.terminal="ID";        nuevo.produccion="SENTENCIA LISTA_SENTENCIAS'";        tabla_sintactica.get(4).add(nuevo);
