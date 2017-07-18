@@ -103,6 +103,7 @@ public class tabla_sintactica
                     if (pos==100) {
                         sig=buscar_siguiente(pila.lastElement());
                         error_sintactico=error_sintactico+"Error en la linea "+pseudo_c.get(0).linea +" "+sig;
+                        verifica=false;
                         System.out.println("Error");
                     }
                     else if (pos>=0 && pos<=17)
