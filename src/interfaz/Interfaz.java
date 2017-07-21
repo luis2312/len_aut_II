@@ -442,6 +442,7 @@ static DefaultTableModel modelo;
         tabla_sintactica.tabla_sintactica();
         //
         analisis_lexico.Analisis_Lexico.pseudo_codigo.clear();
+        analisis_lexico.Analisis_Lexico.codigo.clear();
         //
         
         Preservadas.clear();

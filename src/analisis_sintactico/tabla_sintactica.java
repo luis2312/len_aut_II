@@ -1,6 +1,7 @@
 
 package analisis_sintactico;
 
+import static analisis_lexico.Analisis_Lexico.recuperar_codigo;
 import static analisis_lexico.Analisis_Lexico.recuperar_pseudo;
 import analisis_lexico.TDA_pseudo_codigo;
 import interfaz.Panel_sintactico;
@@ -18,14 +19,23 @@ public class tabla_sintactica
     public static Stack<String> pila_aux = new Stack<>(); 
     //public static ArrayList <String> pseudo_c=new ArrayList<>();
     public static ArrayList <TDA_pseudo_codigo> pseudo_c=new ArrayList<>();
+    public static ArrayList <String> codigo_=new ArrayList<>();
     public static Object pseudo_c_aux=new ArrayList<>();
+    public static Object codigo_aux=new ArrayList<>();
     public static TDA nuevo;
     public static String error_sintactico="", sig="";
+    public static boolean semantico =false;
+    public static boolean semantico_2 =false;
+    public static String cadena_semantica ="";
+    public static String linea_semantica ="";
     
     public static void tabla_sintactica()
     {
         pseudo_c=recuperar_pseudo();
         pseudo_c_aux=pseudo_c.clone();//solo como respaldo
+        
+        codigo_=recuperar_codigo();
+        codigo_aux=codigo_.clone();//solo como respaldo
         verificador();
     }
     
@@ -38,10 +48,12 @@ public class tabla_sintactica
         int pos;
         boolean primera=false;
         
+   
         if (pseudo_c.size()>1) 
         {
             aux_pseudo = pseudo_c.get(0).token;
             pos=recuperar_terminal(inicio);
+            String aux_cadena_semantica="";
             for (int i = 0; i < tabla_sintactica.get(pos).size(); i++) 
             {
                 if (tabla_sintactica.get(pos).get(i).terminal.equals(aux_pseudo)) 
@@ -69,17 +81,50 @@ public class tabla_sintactica
                 ||pila.lastElement().equals("fin")||pila.lastElement().equals("(")||pila.lastElement().equals("TERMINO")
                 ||pila.lastElement().equals("=")||pila.lastElement().equals(":")) 
                 {
+                    if (semantico && pila.lastElement().equals(";")) {
+                        semantico = false;
+                        cadena_semantica=cadena_semantica+aux_cadena_semantica+" - "+linea_semantica+" - expresion_simple \n";
+                        aux_cadena_semantica="";
+                    }
+                    if (semantico_2 && pila.lastElement().equals(")")) {
+                        semantico_2 = false;
+                        cadena_semantica=cadena_semantica+aux_cadena_semantica+" - "+linea_semantica+" - expresion \n";
+                        aux_cadena_semantica="";
+                    }
                     if (pila.lastElement().equals("TERMINO")) 
                     {
                         if (pseudo_c.get(0).token.equals("ID") || pseudo_c.get(0).token.equals("Constante")) {
+                            if (semantico) 
+                            {
+                                //cadena_semantica=cadena_semantica+" "+codigo_.get(0)+" ";
+                                aux_cadena_semantica=aux_cadena_semantica+" "+codigo_.get(0)+" ";
+                                linea_semantica=pseudo_c.get(0).linea+"";
+                            }
+                            if (semantico_2) {
+                                //cadena_semantica=cadena_semantica+" "+codigo_.get(0)+" ";
+                                aux_cadena_semantica=aux_cadena_semantica+" "+codigo_.get(0)+" ";
+                                linea_semantica=pseudo_c.get(0).linea+"";
+                            }
                             pila.pop();
                             pseudo_c.remove(0);
+                            codigo_.remove(0);
                         }
                     }
                     else if (pila.lastElement().equals(pseudo_c.get(0).token)) 
                     {
+                        if (semantico) {
+                            //cadena_semantica=cadena_semantica+" "+codigo_.get(0)+" ";
+                            aux_cadena_semantica=aux_cadena_semantica+" "+codigo_.get(0)+" ";
+                            linea_semantica=pseudo_c.get(0).linea+"";
+                        }
+                        if (semantico_2) {
+                            //cadena_semantica=cadena_semantica+" "+codigo_.get(0)+" ";
+                            aux_cadena_semantica=aux_cadena_semantica+" "+codigo_.get(0)+" ";
+                            linea_semantica=pseudo_c.get(0).linea+"";
+                        }
                         pila.pop();
                         pseudo_c.remove(0);
+                        codigo_.remove(0);
                     }
                     else
                     {
@@ -121,6 +166,12 @@ public class tabla_sintactica
                             else if (tabla_sintactica.get(pos).get(i).terminal.equals(aux_pseudo)) 
                             {
                                 System.out.println("AQUI ESTA LA PRODUCCION"+tabla_sintactica.get(pos).get(i).produccion);
+                                if (tabla_sintactica.get(pos).get(i).produccion.equals("ID = EXPRESION_SIMPLE ;")) {
+                                    semantico=true;
+                                }
+                                if (tabla_sintactica.get(pos).get(i).produccion.equals("EXPRESION_SIMPLE EXPRESION'")) {
+                                    semantico_2=true;
+                                }
                                 if (tabla_sintactica.get(pos).get(i).produccion.equals("vacio")) 
                                 {
                                     pila.pop();
@@ -145,6 +196,7 @@ public class tabla_sintactica
                     }
                     
                 }
+                
                 System.out.println("este es el contenido de la pila "+pila.toString());
                 System.out.println("este es el contenido del codigo  "+Arrays.toString(pseudo_c.toArray()));
             }
@@ -164,7 +216,11 @@ public class tabla_sintactica
         
         Panel_sintactico.txtSintactico.setText(error_sintactico);
         error_sintactico="";
+        System.out.println("Esta es la cadena semantica \n"+cadena_semantica);
         
+        cadena_semantica="";
+        semantico=false;
+        semantico_2=false;
         
     }
     

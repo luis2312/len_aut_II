@@ -13,11 +13,12 @@ public class Analisis_Lexico
     static ArrayList <ArrayList<String>> tabla_palabraDef;
     static ArrayList <ArrayList<String>> tabla_operadoresArit;
     static ArrayList <ArrayList<String>> tabla_operadoresLog;
-    static ArrayList <ArrayList<String>> tabla_id;
+    static ArrayList <TDA_variable> tabla_id  = new ArrayList<>();;
     static ArrayList <ArrayList<String>> tabla_delimitador;
     static ArrayList <ArrayList<String>> tabla_operadoresBoo;
     //public static ArrayList <String> pseudo_codigo=new ArrayList<>();
     public static ArrayList <TDA_pseudo_codigo> pseudo_codigo=new ArrayList<>();
+    public static ArrayList <String> codigo=new ArrayList<>();
     public static TDA_pseudo_codigo aux_tda_pseudo;
     public static ArrayList <String> errores_lexicos=new ArrayList<>();
     static int count_pal_re=0, count_id=0, count_oper_arit=0, count_oper_log=0;
@@ -40,7 +41,6 @@ public class Analisis_Lexico
     public static void generar()
     {
         tabla_palabraDef = new ArrayList<>(100);
-        tabla_id = new ArrayList<>(100);
         tabla_operadoresArit = new ArrayList<>(100);
         tabla_operadoresLog = new ArrayList<>(100);
         tabla_delimitador = new ArrayList<>(100);
@@ -48,7 +48,6 @@ public class Analisis_Lexico
         for (int i = 0; i < 100; i++)
         {
             tabla_palabraDef.add(i,new ArrayList<String>());
-            tabla_id.add(i,new ArrayList<String>());
             tabla_operadoresArit.add(i,new ArrayList<String>());
             tabla_operadoresLog.add(i,new ArrayList<String>());
             tabla_delimitador.add(i,new ArrayList<String>());
@@ -154,12 +153,25 @@ public class Analisis_Lexico
             tabla_operadoresArit.get(pos).add(cadena);
         else if(id==3)
             tabla_operadoresLog.get(pos).add(cadena);
-        else if(id==4)
-            tabla_id.get(pos).add(cadena);
         else if(id==5)
             tabla_delimitador.get(pos).add(cadena);
         else if(id==6)
             tabla_operadoresBoo.get(pos).add(cadena);
+    }
+    
+    public static void obtenIndex(TDA_variable tipo_v)
+    {
+        int tamano=0;
+        tamano = tabla_id.size();
+        for (int i = 0; i < tamano; i++) 
+        {
+            if (tipo_v.nombre.equals(tabla_id.get(i).nombre)) 
+            {
+                tipo_v.definida=false;
+                break;
+            }
+        }
+        tabla_id.add(tipo_v);
     }
     
     //FUNCION HASH
@@ -223,6 +235,21 @@ public class Analisis_Lexico
                                     aux_tda_pseudo.linea=linea;
                                     aux_tda_pseudo.token="TIPO";
                                     pseudo_codigo.add(aux_tda_pseudo);
+                                    codigo.add(palabras.get(i));
+                                    try
+                                    {
+                                        String tipo=palabras.get(i);
+                                        String variable=palabras.get(i+1);
+                                        boolean aux_id=verifica_Identifcador(variable);
+                                        if (aux_id) {
+                                            TDA_variable aux_tda = new TDA_variable();
+                                            aux_tda.nombre=variable;
+                                            aux_tda.tipo=tipo;
+                                            obtenIndex(aux_tda);
+                                        }
+                                    }
+                                    catch (Exception e)
+                                    {}
                                     //pseudo_codigo.add("TIPO");
                                 }
                                 else
@@ -231,6 +258,7 @@ public class Analisis_Lexico
                                     aux_tda_pseudo.linea=linea;
                                     aux_tda_pseudo.token=palabras.get(i);
                                     pseudo_codigo.add(aux_tda_pseudo);
+                                    codigo.add(palabras.get(i));
                                     //pseudo_codigo.add(palabras.get(i));
                                 }
                                 //pseudo_codigo.add(aux);
@@ -254,6 +282,7 @@ public class Analisis_Lexico
                                     aux_tda_pseudo.linea=linea;
                                     aux_tda_pseudo.token="=";
                                     pseudo_codigo.add(aux_tda_pseudo);
+                                    codigo.add("=");
                                     //pseudo_codigo.add("=");
                                 }
                                 else
@@ -262,6 +291,7 @@ public class Analisis_Lexico
                                     aux_tda_pseudo.linea=linea;
                                     aux_tda_pseudo.token="OPERADOR_ARITMETICO";
                                     pseudo_codigo.add(aux_tda_pseudo);
+                                    codigo.add("OPERADOR_ARITMETICO");
                                     //pseudo_codigo.add("OPERADOR_ARITMETICO");
                                 }
                                 Interfaz.operadoresA(palabras.get(i));
@@ -282,6 +312,7 @@ public class Analisis_Lexico
                                 aux_tda_pseudo.linea=linea;
                                 aux_tda_pseudo.token="OPERADOR_LOGICO";
                                 pseudo_codigo.add(aux_tda_pseudo);
+                                codigo.add("OPERADOR_LOGICO");
                                 //pseudo_codigo.add("OPERADOR_LOGICO");
                                 Interfaz.operadoresL(palabras.get(i));
                                 bandera=true;
@@ -299,6 +330,7 @@ public class Analisis_Lexico
                                 aux_tda_pseudo.linea=linea;
                                 aux_tda_pseudo.token="OPERADOR_BOOLEANO";
                                 pseudo_codigo.add(aux_tda_pseudo);
+                                codigo.add("OPERADOR_BOOLEANO");
                                 //pseudo_codigo.add("OPERADOR_BOOLEANO");
                                 //Interfaz.operadoresL(palabras.get(i));// falta agregarlo a la interfaz
                                 bandera=true;
@@ -316,6 +348,7 @@ public class Analisis_Lexico
                                 aux_tda_pseudo.token=palabras.get(i);
                                 pseudo_codigo.add(aux_tda_pseudo);
                                 //pseudo_codigo.add(palabras.get(i));
+                                codigo.add(palabras.get(i));
                                 System.out.println(""+palabras.get(i)+" es delimitador");
                                 Interfaz.delimitadores(palabras.get(i));
                                 bandera=true;
@@ -330,15 +363,12 @@ public class Analisis_Lexico
                     aux_tda_pseudo.linea=linea;
                     aux_tda_pseudo.token="ERROR_LEXICO";
                     pseudo_codigo.add(aux_tda_pseudo);
+                    codigo.add("ERROR_LEXICO");
                     //pseudo_codigo.add("ERROR_LEXICO");
                     System.out.println("error en la liena : U" +linea);
                     errores_lexicos.add(palabras.get(i));
                     errores_lexicos.add(""+linea);
                 }
-                   
-                
-                
-                    
         }
     }
     
@@ -370,6 +400,7 @@ public class Analisis_Lexico
                                 aux_tda_pseudo.linea=linea;
                                 aux_tda_pseudo.token="Constante";
                                 pseudo_codigo.add(aux_tda_pseudo);
+                                codigo.add("C_int");
                                 //pseudo_codigo.add("Constante");
                                 System.out.println(lexema+" Es un numero");
                                 i=lexema.length();
@@ -408,6 +439,7 @@ public class Analisis_Lexico
                                 aux_tda_pseudo.linea=linea;
                                 aux_tda_pseudo.token="Constante";
                                 pseudo_codigo.add(aux_tda_pseudo);
+                                codigo.add("C_int");
                                 //pseudo_codigo.add("Constante");
                                 System.out.println(lexema+" Es un numero");
                                 i=lexema.length();
@@ -439,6 +471,7 @@ public class Analisis_Lexico
                                 aux_tda_pseudo.linea=linea;
                                 aux_tda_pseudo.token="Constante";
                                 pseudo_codigo.add(aux_tda_pseudo);
+                                codigo.add("C_int");
                                 //pseudo_codigo.add("Constante");
                                 System.out.println(lexema+" Es un numero");
                                 i=lexema.length();
@@ -470,6 +503,7 @@ public class Analisis_Lexico
                                 aux_tda_pseudo.linea=linea;
                                 aux_tda_pseudo.token="Constante";
                                 pseudo_codigo.add(aux_tda_pseudo);
+                                codigo.add("C_float");
                                 //pseudo_codigo.add("Constante");
                                 System.out.println(lexema+" Es un numero");
                                 i=lexema.length();
@@ -492,6 +526,7 @@ public class Analisis_Lexico
                             aux_tda_pseudo.linea=linea;
                             aux_tda_pseudo.token="Constante";
                             pseudo_codigo.add(aux_tda_pseudo);
+                            codigo.add("C_float");
                             //pseudo_codigo.add("Constante");
                             bandera=true;
                             System.out.println(lexema+" Es un numero");
@@ -518,6 +553,7 @@ public class Analisis_Lexico
                                 aux_tda_pseudo.linea=linea;
                                 aux_tda_pseudo.token="Constante";
                                 pseudo_codigo.add(aux_tda_pseudo);
+                                codigo.add("C_int");
                                 //pseudo_codigo.add("Constante");
                                 System.out.println(lexema+" Es un numero");
                                 i=lexema.length();
@@ -547,6 +583,7 @@ public class Analisis_Lexico
                                 aux_tda_pseudo.linea=linea;
                                 aux_tda_pseudo.token="Constante";
                                 pseudo_codigo.add(aux_tda_pseudo);
+                                codigo.add("C_int");
                                 //pseudo_codigo.add("Constante");
                                 System.out.println(lexema+" Es un numero");
                                 i=lexema.length();
@@ -614,6 +651,7 @@ public class Analisis_Lexico
                         aux_tda_pseudo.linea=linea;
                         aux_tda_pseudo.token="Constante";
                         pseudo_codigo.add(aux_tda_pseudo);
+                        codigo.add("C_String");
                         //pseudo_codigo.add("Constante");
                         System.out.println(""+lexema+" "+resultado);
                         estado="q3";
@@ -633,6 +671,7 @@ public class Analisis_Lexico
                         aux_tda_pseudo.linea=linea;
                         aux_tda_pseudo.token="Constante";
                         pseudo_codigo.add(aux_tda_pseudo);
+                        codigo.add("C_String");
                         //pseudo_codigo.add("Constante");
                         System.out.println(""+lexema+" "+resultado);
                         estado="q3";
@@ -770,13 +809,14 @@ public class Analisis_Lexico
                         else if (lexema.length()==i+1)
                         {
                             estado="q4";
-                            obtenIndex(lexema, 4);
+                            //obtenIndex(lexema, 4);
                             //count_id++;
                             //aux="ID"+count_id;
                             aux_tda_pseudo = new TDA_pseudo_codigo();
                             aux_tda_pseudo.linea=linea;
                             aux_tda_pseudo.token="ID";
                             pseudo_codigo.add(aux_tda_pseudo);
+                            codigo.add(lexema);
                             //pseudo_codigo.add("ID");
                             bandera=true;
                             System.out.println(""+lexema+" es un identificador");
@@ -790,16 +830,94 @@ public class Analisis_Lexico
                         if (lexema.length()==i+1)
                         {
                             estado="q4";
-                            obtenIndex(lexema, 4);
+                            //obtenIndex(lexema, 4);
                             //count_id++;
                             //aux="ID"+count_id;
                             aux_tda_pseudo = new TDA_pseudo_codigo();
                             aux_tda_pseudo.linea=linea;
                             aux_tda_pseudo.token="ID";
                             pseudo_codigo.add(aux_tda_pseudo);
+                            codigo.add(lexema);
                             //pseudo_codigo.add("ID");
                             bandera=true;
                             System.out.println(""+lexema+" es un identificador");
+                        }   
+                        else
+                            estado="q4";
+                        break;
+                    }
+                    case "q5":
+                    {
+                        i=lexema.length()-1;
+                        break;
+                    }
+                }
+            }
+        }  
+        catch (Exception e)
+        {
+            
+        }
+        return bandera;
+    }
+    
+    public static boolean verifica_Identifcador(String lexema) 
+    {
+        boolean bandera = false;
+        String estado="q0";
+        String caracter1 = "", caracter2= "", caracter3="", aux="";
+        try
+        {
+            for (int i = 0; i < lexema.length(); i++) 
+            {
+                switch (estado)
+                {
+                    case "q0":
+                    {
+                        caracter1 = lexema.charAt(0) + "";
+                        if (caracter1.matches("v"))
+                            estado="q1";
+                        else
+                            estado="q5";
+                        break;
+                    }
+                    case "q1":
+                    {
+                        caracter2 = lexema.charAt(1) + "";
+                        if (caracter2.matches("a"))
+                            estado="q2";
+                        else
+                            estado="q5";
+                        break;
+                    }
+                    case "q2":
+                    {
+                        caracter3 = lexema.charAt(2) + "";
+                        if (caracter3.matches("r"))
+                            estado="q3";
+                        else
+                            estado="q5";
+                        break;
+                    }
+                    case "q3":
+                    {
+                        if (lexema.length()>i+1)
+                            estado="q4";                          
+                        else if (lexema.length()==i+1)
+                        {
+                            estado="q4";
+                            bandera=true;
+                        } 
+                        else
+                            estado="q5";
+                        break;
+                    }
+                    case "q4":
+                    {
+                        if (lexema.length()==i+1)
+                        {
+                            estado="q4";
+                            bandera=true;
                         }   
                         else
                             estado="q4";
@@ -840,7 +958,7 @@ public class Analisis_Lexico
             }
         }
         System.out.println(""+cadena);
-        
+        System.out.println("Aqui esta el codigo"+codigo.toString());
         return cadena;
     }
     
@@ -859,5 +977,17 @@ public class Analisis_Lexico
         return pseudo_codigo;
     }
     
+    public static ArrayList<String> recuperar_codigo()
+    {
+        return codigo;
+    }
+    
+    public static void tipo_variable()
+    {
+        try
+        {}
+        catch (Exception e)
+        {}
+    }
    
 }
