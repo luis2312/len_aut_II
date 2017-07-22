@@ -4,6 +4,7 @@ package analisis_sintactico;
 import static analisis_lexico.Analisis_Lexico.recuperar_codigo;
 import static analisis_lexico.Analisis_Lexico.recuperar_pseudo;
 import analisis_lexico.TDA_pseudo_codigo;
+import analisis_semantico.analisis_semantico;
 import interfaz.Panel_sintactico;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,9 +20,12 @@ public class tabla_sintactica
     public static Stack<String> pila_aux = new Stack<>(); 
     //public static ArrayList <String> pseudo_c=new ArrayList<>();
     public static ArrayList <TDA_pseudo_codigo> pseudo_c=new ArrayList<>();
-    public static ArrayList <String> codigo_=new ArrayList<>();
-    public static Object pseudo_c_aux=new ArrayList<>();
-    public static Object codigo_aux=new ArrayList<>();
+    public static ArrayList <TDA_pseudo_codigo> codigo_=new ArrayList<>();
+    public static ArrayList <TDA_pseudo_codigo> pseudo_c_aux=new ArrayList<>();
+    public static ArrayList <TDA_pseudo_codigo> codigo_aux=new ArrayList<>();
+    
+     
+    
     public static TDA nuevo;
     public static String error_sintactico="", sig="";
     public static boolean semantico =false;
@@ -32,12 +36,16 @@ public class tabla_sintactica
     public static void tabla_sintactica()
     {
         pseudo_c=recuperar_pseudo();
-        pseudo_c_aux=pseudo_c.clone();//solo como respaldo
+        pseudo_c_aux= (ArrayList) pseudo_c.clone();//solo como respaldo
         
         codigo_=recuperar_codigo();
-        codigo_aux=codigo_.clone();//solo como respaldo
+        codigo_aux= (ArrayList) codigo_.clone();//solo como respaldo
+   
         verificador();
+        analisis_semantico.semantico();
     }
+    
+     
     
     public static void verificador()
     {
@@ -97,12 +105,12 @@ public class tabla_sintactica
                             if (semantico) 
                             {
                                 //cadena_semantica=cadena_semantica+" "+codigo_.get(0)+" ";
-                                aux_cadena_semantica=aux_cadena_semantica+" "+codigo_.get(0)+" ";
+                                aux_cadena_semantica=aux_cadena_semantica+" "+codigo_.get(0).token+" ";
                                 linea_semantica=pseudo_c.get(0).linea+"";
                             }
                             if (semantico_2) {
                                 //cadena_semantica=cadena_semantica+" "+codigo_.get(0)+" ";
-                                aux_cadena_semantica=aux_cadena_semantica+" "+codigo_.get(0)+" ";
+                                aux_cadena_semantica=aux_cadena_semantica+" "+codigo_.get(0).token+" ";
                                 linea_semantica=pseudo_c.get(0).linea+"";
                             }
                             pila.pop();
@@ -114,12 +122,12 @@ public class tabla_sintactica
                     {
                         if (semantico) {
                             //cadena_semantica=cadena_semantica+" "+codigo_.get(0)+" ";
-                            aux_cadena_semantica=aux_cadena_semantica+" "+codigo_.get(0)+" ";
+                            aux_cadena_semantica=aux_cadena_semantica+" "+codigo_.get(0).token+" ";
                             linea_semantica=pseudo_c.get(0).linea+"";
                         }
                         if (semantico_2) {
                             //cadena_semantica=cadena_semantica+" "+codigo_.get(0)+" ";
-                            aux_cadena_semantica=aux_cadena_semantica+" "+codigo_.get(0)+" ";
+                            aux_cadena_semantica=aux_cadena_semantica+" "+codigo_.get(0).token+" ";
                             linea_semantica=pseudo_c.get(0).linea+"";
                         }
                         pila.pop();
@@ -414,6 +422,13 @@ public class tabla_sintactica
         }
         //System.out.println("este es el contenido de la pila "+pila.toString());
     }
+    
+    
+    public static ArrayList <TDA_pseudo_codigo> recupera_c()
+    {
+        return codigo_aux;
+    }
+    
     
     
 }

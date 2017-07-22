@@ -443,6 +443,8 @@ static DefaultTableModel modelo;
         //
         analisis_lexico.Analisis_Lexico.pseudo_codigo.clear();
         analisis_lexico.Analisis_Lexico.codigo.clear();
+        analisis_lexico.Analisis_Lexico.int_semantico.clear();
+        analisis_lexico.Analisis_Lexico.tabla_id.clear();
         //
         
         Preservadas.clear();
