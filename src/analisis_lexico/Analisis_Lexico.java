@@ -73,10 +73,7 @@ public class Analisis_Lexico
         obtenIndex("Constante", 1);
         obtenIndex("int", 1);
         obtenIndex("float", 1);
-        obtenIndex("double", 1);
         obtenIndex("String", 1);
-        obtenIndex("byte", 1);
-        obtenIndex("boolean", 1);
         obtenIndex("char", 1);
         
         //Operadores Aritmeticos
@@ -85,8 +82,6 @@ public class Analisis_Lexico
         obtenIndex("/", 2);
         obtenIndex("*", 2);
         obtenIndex("=", 2);
-        obtenIndex("%", 2);
-        obtenIndex("^", 2);
         
         //Operadores Logicos
         obtenIndex("<", 3);
@@ -171,7 +166,7 @@ public class Analisis_Lexico
         {
             if (tipo_v.nombre.equals(tabla_id.get(i).nombre)) 
             {
-                tipo_v.definida=false;
+                tipo_v.duplicada=tabla_id.get(i).duplicada+1;
                 break;
             }
         }
@@ -234,8 +229,8 @@ public class Analisis_Lexico
                                 System.out.println(""+palabras.get(i)+" es una palabra reservada");
                                 count_pal_re++;
                                 aux="Pal_Reservada"+count_pal_re;
-                                if (palabras.get(i).matches("int")||palabras.get(i).matches("float")||palabras.get(i).matches("double")
-                                   ||palabras.get(i).matches("String")||palabras.get(i).matches("byte")||palabras.get(i).matches("boolean")
+                                if (palabras.get(i).matches("int")||palabras.get(i).matches("float")
+                                   ||palabras.get(i).matches("String")
                                    ||palabras.get(i).matches("char")) 
                                 {
                                     aux_tda_pseudo = new TDA_pseudo_codigo();
@@ -247,6 +242,8 @@ public class Analisis_Lexico
                                     aux_tda_pseudo.linea=linea;
                                     aux_tda_pseudo.token="TIPO";
                                     codigo.add(aux_tda_pseudo);
+                                    
+                                    
                                     try
                                     {
                                         String tipo=palabras.get(i);
@@ -275,6 +272,10 @@ public class Analisis_Lexico
                                     aux_tda_pseudo.token=palabras.get(i);
                                     codigo.add(aux_tda_pseudo);
                                     //pseudo_codigo.add(palabras.get(i));
+                                }
+                                if (palabras.get(i).matches("switch")||palabras.get(i).matches("if")||palabras.get(i).matches("while")) 
+                                {
+                                    verifica_ex(linea, palabras);
                                 }
                                 //pseudo_codigo.add(aux);
                                 reservadas(palabras.get(i));
@@ -344,7 +345,7 @@ public class Analisis_Lexico
                                 
                                 aux_tda_pseudo = new TDA_pseudo_codigo();
                                     aux_tda_pseudo.linea=linea;
-                                    aux_tda_pseudo.token=palabras.get(i);
+                                    aux_tda_pseudo.token="OPERADOR_LOGICO";
                                     codigo.add(aux_tda_pseudo);
                                 verifica_ex(linea, palabras);
                                 //pseudo_codigo.add("OPERADOR_LOGICO");
@@ -368,7 +369,7 @@ public class Analisis_Lexico
                                 
                                 aux_tda_pseudo = new TDA_pseudo_codigo();
                                     aux_tda_pseudo.linea=linea;
-                                    aux_tda_pseudo.token=palabras.get(i);
+                                    aux_tda_pseudo.token="OPERADOR_BOOLEANO";
                                     codigo.add(aux_tda_pseudo);
                                 verifica_ex(linea, palabras);
                                 //pseudo_codigo.add("OPERADOR_BOOLEANO");
@@ -1080,7 +1081,7 @@ public class Analisis_Lexico
         return cadena;
     }
     
-    static String quitaSalto(String cadena)
+    public static String quitaSalto(String cadena)
     {
 	String [] cadSplit = cadena.split("\r");
 	String cadReturn = "";

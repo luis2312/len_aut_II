@@ -101,7 +101,8 @@ public class tabla_sintactica
                     }
                     if (pila.lastElement().equals("TERMINO")) 
                     {
-                        if (pseudo_c.get(0).token.equals("ID") || pseudo_c.get(0).token.equals("Constante")) {
+                        if (pseudo_c.get(0).token.equals("ID") || pseudo_c.get(0).token.equals("Constante")) 
+                        {
                             if (semantico) 
                             {
                                 //cadena_semantica=cadena_semantica+" "+codigo_.get(0)+" ";
@@ -117,6 +118,13 @@ public class tabla_sintactica
                             pseudo_c.remove(0);
                             codigo_.remove(0);
                         }
+                        else
+                        {
+                            verifica=false;
+                            sig=buscar_siguiente(pila.lastElement());
+                            error_sintactico=error_sintactico+"Error en la linea "+pseudo_c.get(0).linea +" "+sig;
+                        }
+                            
                     }
                     else if (pila.lastElement().equals(pseudo_c.get(0).token)) 
                     {

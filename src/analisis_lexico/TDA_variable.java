@@ -6,13 +6,13 @@ public class TDA_variable
 {
     public String tipo;
     public String nombre;
-    public boolean definida;
+    public int duplicada;
     
     public TDA_variable()
     {
         tipo="";
         nombre="";
-        definida=true;
+        duplicada=0;
     }
     
 }
